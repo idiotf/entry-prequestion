@@ -1,4 +1,4 @@
-import { selectDiscuss } from './entry'
+import { selectDiscuss } from './request'
 
 function visitQnaList(list: Element) {
   for (const child of list.children) {
@@ -58,8 +58,11 @@ function visitQnaItem(container: Element, id: string) {
 }
 
 const observer = new MutationObserver(() => {
-  const qnaList = document.querySelector('.e196ovd80')
+  const qnaList = document.querySelector('.nextInner section > div > div > ul')
   if (qnaList) visitQnaList(qnaList)
 })
 
-observer.observe(document.body, { subtree: true, childList: true })
+// Supporting for XML documents
+if (document.body) {
+  observer.observe(document.body, { subtree: true, childList: true })
+}

@@ -1,17 +1,15 @@
 {
   "name": "entry-prequestion",
-  "devDependencies": {
-    "@types/chrome": "^0.1.36"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  },
+  "type": "module",
   "private": true,
+  "devDependencies": {
+    "@types/chrome": "^0.3.7",
+    "typescript": "^6"
+  },
   "scripts": {
     "build:temp": "rm -rf build/dist && bun build src/index.ts --outdir build/dist --minify",
     "dev": "bun --silent build:temp --watch --sourcemap",
     "watch": "bun --silent dev",
     "build": "bun --silent build:temp --production"
-  },
-  "type": "module"
+  }
 }

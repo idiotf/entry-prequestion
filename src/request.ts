@@ -4,11 +4,10 @@ function getIdeal() {
   const content = document.getElementById('__NEXT_DATA__')?.textContent
   if (!content) return {}
 
-  const __NEXT_DATA__ = JSON.parse(content)
-
+  const props = JSON.parse(content)?.props
   return {
-    csrfToken: __NEXT_DATA__?.props?.initialProps?.csrfToken,
-    xToken: __NEXT_DATA__?.props?.pageProps?.initialState?.common?.user?.xToken,
+    csrfToken: props?.initialProps?.csrfToken,
+    xToken: props?.pageProps?.initialState?.common?.user?.xToken,
   }
 }
 
@@ -16,10 +15,10 @@ async function request(query: string, variables: object, signal?: AbortSignal) {
   const { csrfToken, xToken } = getIdeal()
 
   const headers = new Headers({
-    'Content-Type': 'application/json',
+    'content-type': 'application/json',
   })
-  if (csrfToken) headers.set('Csrf-Token', csrfToken)
-  if (xToken) headers.set('X-Token', xToken)
+  if (csrfToken) headers.set('csrf-token', csrfToken)
+  if (xToken) headers.set('x-token', xToken)
 
   const res = await fetch('/graphql', {
     method: 'POST',
@@ -41,11 +40,14 @@ let throttled = false
 async function selectQnaMany() {
   throttled = false
 
-  const qnas = await selectMultipleQna([...qnaRequests.keys()])
-  for (const id in qnas) {
-    const qna = qnas[id]
-    qnaRequests.get(id)?.(qna)
-    qnaRequests.delete(id)
+  const qnaList = await selectMultipleQna([...qnaRequests.keys()])
+  for (const id in qnaList) {
+    const qna = qnaList[id]
+    try {
+      qnaRequests.get(id)?.(qna)
+    } finally {
+      qnaRequests.delete(id)
+    }
   }
 }
 
